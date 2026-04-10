@@ -127,4 +127,101 @@
   html {
     @apply font-sans;
   }
+
+  /* ==========================================================================
+     Morph transition — used for shared elements (e.g. dog image) that smoothly
+     animate size and position between two pages via <ViewTransition share="morph">.
+     The group handles the size/position interpolation; we disable the default
+     cross-fade on old/new to prevent flickering (two overlapping snapshots).
+     ========================================================================== */
+
+  /* Controls the overall morph duration and easing */
+  ::view-transition-group(.morph) {
+    animation-duration: 400ms;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Disable default compositing isolation so old/new don't blend together */
+  ::view-transition-image-pair(.morph) {
+    isolation: auto;
+  }
+
+  /* Hide the old snapshot immediately — prevents ghost/double image */
+  ::view-transition-old(.morph) {
+    animation: none;
+    opacity: 0;
+    mix-blend-mode: normal;
+  }
+
+  /* Show the new snapshot with no animation — the group handles the morph */
+  ::view-transition-new(.morph) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+
+  /* ==========================================================================
+     Navigation transitions — page-level slide + fade for forward/back navigation.
+     Triggered by <Link transitionTypes={['nav-forward']}> or ['nav-back'].
+
+     Timing choreography:
+       0–150ms:   Old page fades out (reverse fade) + starts sliding away
+       150–360ms: New page fades in (after 150ms delay) + continues sliding in
+       0–400ms:   Both slides run the full 400ms duration
+
+     The staggered fade prevents both pages from being visible at full opacity
+     at the same time, avoiding a flash/flicker.
+     ========================================================================== */
+
+  /* Forward nav: old page slides LEFT and fades out */
+  ::view-transition-old(.nav-forward) {
+    --slide-offset: -60px;
+    animation:
+      150ms ease-in both fade reverse,   /* fade out quickly */
+      400ms ease-in-out both slide reverse; /* slide from 0 to -60px (left) */
+  }
+
+  /* Forward nav: new page slides in FROM THE RIGHT and fades in */
+  ::view-transition-new(.nav-forward) {
+    --slide-offset: 60px;
+    animation:
+      210ms ease-out 150ms both fade,      /* fade in after 150ms delay */
+      400ms ease-in-out both slide;        /* slide from 60px (right) to 0 */
+  }
+
+  /* Back nav: old page slides RIGHT and fades out (opposite of forward) */
+  ::view-transition-old(.nav-back) {
+    --slide-offset: 60px;
+    animation:
+      150ms ease-in both fade reverse,
+      400ms ease-in-out both slide reverse;
+  }
+
+  /* Back nav: new page slides in FROM THE LEFT and fades in */
+  ::view-transition-new(.nav-back) {
+    --slide-offset: -60px;
+    animation:
+      210ms ease-out 150ms both fade,
+      400ms ease-in-out both slide;
+  }
+
+  /* Simple opacity keyframe — used normally for fade-in, reversed for fade-out */
+  @keyframes fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Directional slide — --slide-offset controls direction and distance.
+     Positive = right, negative = left. "reverse" flips from→to order. */
+  @keyframes slide {
+    from {
+      translate: var(--slide-offset);
+    }
+    to {
+      translate: 0;
+    }
+  }
 }
