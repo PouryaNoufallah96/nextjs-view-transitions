@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Header() {
   return (
-    <header className="bg-zinc-50 dark:bg-zinc-950">
+    <header className="bg-yellow-50 dark:bg-yellow-950">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
           <Link href="/" transitionTypes={['nav-back']}>Cute Dogs</Link>

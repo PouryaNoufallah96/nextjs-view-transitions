@@ -7,7 +7,6 @@ import {
 } from "@/components/ui/card";
 import { HTTP_DOGS } from "@/lib/http-dogs";
 import Link from "next/link";
-import { ViewTransition } from "react";
 import { DogFilter } from "@/components/dog-filter";
 
 const POPULAR_CODES = [200, 404, 500, 301, 418];
@@ -32,17 +31,15 @@ export default async function Home({
           {dogs.map(({ code, message }) => (
             <Link href={`/dogs/${code}`} key={code} transitionTypes={['nav-forward']}>
               <Card>
-                <ViewTransition name={`dog-${code}`} share="morph">
-                  <div className="relative aspect-square">
-                    <Image
-                      src={`https://http.dog/${code}.jpg`}
-                      alt={`${code} ${message}`}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                    />
-                  </div>
-                </ViewTransition>
+                <div className="relative aspect-square">
+                  <Image
+                    src={`https://http.dog/${code}.jpg`}
+                    alt={`${code} ${message}`}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                  />
+                </div>
                 <CardHeader>
                   <CardTitle>{code}</CardTitle>
                   <CardDescription>{message}</CardDescription>
